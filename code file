@@ -1,0 +1,140 @@
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+# importing data
+from google.colab import drive
+drive.mount('/content/drive')
+
+# importing data file
+path = '/content/drive/MyDrive/screen_time.csv'
+data = pd.read_csv(path)
+
+# first five rows of data
+data.head()
+
+# last five rows of data
+data.tail()
+
+# checking info
+data.info()
+
+# checking null values
+data.isnull().sum()
+
+# shape of data
+data.shape
+
+data.describe()
+
+data['Age'].unique()
+
+data['Gender'].unique()
+
+# Unique values
+data['Screen Time Type'].unique()
+
+data['Average Screen Time (hours)'].unique()
+
+data['Sample Size'].unique()
+
+data['Day Type'].unique()
+
+# Univariate analysis
+sns.histplot(data=data, x='Age');
+
+sns.histplot(data=data, x='Gender');
+
+sns.histplot(data=data, x='Screen Time Type');
+
+sns.histplot(data=data, x='Day Type');
+
+sns.histplot(data=data, x='Average Screen Time (hours)');
+
+# Bivariate Analysis
+sns.barplot(data=data, x='Average Screen Time (hours)', hue='Gender')
+
+data.groupby('Gender')['Average Screen Time (hours)'].sum().value_counts(normalize=True)
+
+"""Shows, Female screen time is 10% less than male and others screen time is 5% less than male overall"""
+
+sns.barplot(data=data, x='Average Screen Time (hours)', hue='Day Type');
+
+data.groupby('Day Type')['Average Screen Time (hours)'].sum().value_counts(normalize=True)
+
+"""Shows, 20% increase in screen time on weekends compared to weekdays"""
+
+sns.barplot(data=data, x='Average Screen Time (hours)', hue='Screen Time Type');
+
+data.groupby('Screen Time Type')['Average Screen Time (hours)'].sum().value_counts(normalize=True)
+
+"""shows, 72% of the total screen time goes to recreational and 27% of the total goes to educational"""
+
+sns.barplot(data=data, x='Screen Time Type', y='Average Screen Time (hours)', hue='Gender');
+
+filtered_data = data[(data['Gender'] == 'Female')]  # Filter the data first
+result = filtered_data.groupby('Screen Time Type')['Average Screen Time (hours)'].sum().value_counts(normalize=True)
+print(result)
+
+"""Female children spends 28% of time in educational screen type, 68% of time in recreational screen type"""
+
+filtered_data_male = data[(data['Gender'] == 'Male')]  # Filter the data first
+result = filtered_data_male.groupby('Screen Time Type')['Average Screen Time (hours)'].sum().value_counts(normalize=True)
+print(result)
+
+"""Male children spends 27% of time in educational screen type, 74% of time in recreational screen type"""
+
+filtered_data_others = data[(data['Gender'] == 'Other/Prefer not to say')]  # Filter the data first
+result = filtered_data_others.groupby('Screen Time Type')['Average Screen Time (hours)'].sum().value_counts(normalize=True)
+print(result)
+
+"""Other children spends 26% of time in educational screen type, 73% of time in recreational screen type"""
+
+sns.barplot(data=data, x='Screen Time Type', y='Average Screen Time (hours)', hue='Age');
+
+"""Looks like, as the age increases, screen time also increases. 14 years of children spends 25% more time on educational screen type and around 20% more time on recreational screen type"""
+
+sns.barplot(data=data, x='Age', y='Average Screen Time (hours)', hue='Day Type');
+
+"""Shows steep linear increase on screen time as the age increases."""
+
+df = data[['Age', 'Average Screen Time (hours)']]
+sns.heatmap(df.corr(), annot=True, vmin=-1, vmax=1, cmap='BrBG');
+
+"""Shows, age is slightly proportional to Average screen time
+
+Observations: The data represents children between the ages of 5 and 15 years.
+
+1. On average, children spend 3 hours on screen.
+2. The minimum screen time recorded among children is 45 minutes.
+3. The maximum screen time recorded is 8 hours.
+4. 75% of children spend an average of 4 hours on screen.
+5. Female children have 10% lower screen time than male children, while other children have 5% lower screen time than male children.
+6. Weekend screen time is 20% higher compared to weekday screen time.
+7. Among female children, 28% of screen time is spent on educational learning, while 68% is spent on recreational activities.
+8. Among male children, 27% of screen time is dedicated to educational learning, and 68% to recreational activities.
+9. Among other children, 25% of screen time is spent on educational learning, and 73% on recreational activities.
+10. 14-year-old children spend 25% more time on educational screen activities compared to 6-year-olds.
+11. 14-year-olds also spend 20% more time on recreational screen activities than 6-year-olds.
+12. The data clearly shows that screen time increases as children grow older.
+
+
+Conclusion:
+
+1. Overall Screen Usage: Children, on average, spend a significant amount of time (3-4 hours) on screens, indicating a high level of digital engagement.
+
+2. Gender-Based Differences: Female children tend to have lower screen time than male children, suggesting possible differences in screen usage habits or parental regulations.Other children also exhibit slightly lower screen time than male children.
+
+3. Weekend vs. Weekday Trends: Weekend screen time is 20% higher, implying that children are more likely to engage with screens for entertainment or education when they have free time.
+
+4. Educational vs. Recreational Screen Time: Across all gender groups, a majority of screen time (68-73%) is spent on recreational activities, while educational usage remains below 30%. This highlights a need for better screen time management to ensure a more balanced use for learning and development.
+
+5. Age-Related Screen Time Increase: Older children (14-year-olds) spend significantly more time on screens than younger ones (6-year-olds) for both educational (+25%) and recreational (+20%) purposes.
+
+
+This suggests that as children grow older, their screen dependency increases, potentially due to schoolwork, social engagement, and entertainment preferences.
+"""
